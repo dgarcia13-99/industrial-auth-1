@@ -1,4 +1,5 @@
-class PhotoPolicy
+class PhotoPolicy < ApplicationPolicy
+  
   attr_reader :user, :photo
 
   def initialize(user, photo)
