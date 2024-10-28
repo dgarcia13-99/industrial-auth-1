@@ -11,4 +11,5 @@ class PhotoPolicy
       !photo.owner.private? ||
       photo.owner.followers.include?(user)
   end
+  
 end
