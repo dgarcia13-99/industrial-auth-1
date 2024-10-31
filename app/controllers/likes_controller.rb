@@ -1,6 +1,6 @@
 class LikesController < ApplicationController
   before_action :set_like, only: %i[ show edit update destroy ]
-  before_action :is_an_authorized_user, only: [:destroy, :create]
+  before_action :ensure_current_user_is_owner, only: [:destroy, :update, :edit]
 
   # GET /likes or /likes.json
   def index
@@ -60,9 +60,8 @@ class LikesController < ApplicationController
       params.require(:like).permit(:fan_id, :photo_id)
     end
 
-    def is_an_authorized_user
-      @photo = Photo.find(params.fetch(:like).fetch(:photo_id))
-      if current_user != @photo.owner && @photo.owner.private? && !current_user.leaders.include?(@photo.owner)
+    def ensure_current_user_is_owner
+      if current_user != @like.fan
         redirect_back fallback_location: root_url, alert: "Not authorized"
       end
     end
