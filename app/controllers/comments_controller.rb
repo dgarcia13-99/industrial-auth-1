@@ -69,7 +69,6 @@ class CommentsController < ApplicationController
       if current_user != @photo.owner && @photo.owner.private? && !current_user.leaders.include?(@photo.owner)
         redirect_back fallback_location: root_url, alert: "Not authorized"
       end
-
     end
 
     # Only allow a list of trusted parameters through.

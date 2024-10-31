@@ -1,22 +1,15 @@
 class LikesController < ApplicationController
   before_action :set_like, only: %i[ show edit update destroy ]
+  before_action :is_an_authorized_user, only: [:destroy, :create]
 
   # GET /likes or /likes.json
   def index
     @likes = Like.all
   end
 
-  # GET /likes/1 or /likes/1.json
-  def show
-  end
-
   # GET /likes/new
   def new
     @like = Like.new
-  end
-
-  # GET /likes/1/edit
-  def edit
   end
 
   # POST /likes or /likes.json
@@ -66,4 +59,12 @@ class LikesController < ApplicationController
     def like_params
       params.require(:like).permit(:fan_id, :photo_id)
     end
+
+    def is_an_authorized_user
+      @photo = Photo.find(params.fetch(:like).fetch(:photo_id))
+      if current_user != @photo.owner && @photo.owner.private? && !current_user.leaders.include?(@photo.owner)
+        redirect_back fallback_location: root_url, alert: "Not authorized"
+      end
+    end
+
 end
