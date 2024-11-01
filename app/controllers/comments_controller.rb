@@ -1,6 +1,8 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[ show edit update destroy ]
-  
+  before_action {authorize(@comment || Comment)}
+  after_action {authorize(@comment || Comment)}, only: %i[show edit update destroy]
+ 
   # GET /comments or /comments.json
   def index
     @comments = Comment.all
@@ -8,7 +10,6 @@ class CommentsController < ApplicationController
 
   # GET /comments/1 or /comments/1.json
   def show
-    authorize @comment
   end
 
   # GET /comments/new
@@ -18,12 +19,10 @@ class CommentsController < ApplicationController
 
   # GET /comments/1/edit
   def edit
-    authorize @comment
   end
 
   # POST /comments or /comments.json
   def create
-    authorize @comment
     @comment = Comment.new(comment_params)
     @comment.author = current_user
 
@@ -36,11 +35,11 @@ class CommentsController < ApplicationController
         format.json { render json: @comment.errors, status: :unprocessable_entity }
       end
     end
+    
   end
 
   # PATCH/PUT /comments/1 or /comments/1.json
   def update
-    authorize @comment
     respond_to do |format|
       if @comment.update(comment_params)
         format.html { redirect_to root_url, notice: "Comment was successfully updated." }
@@ -50,16 +49,17 @@ class CommentsController < ApplicationController
         format.json { render json: @comment.errors, status: :unprocessable_entity }
       end
     end
+    
   end
 
   # DELETE /comments/1 or /comments/1.json
   def destroy
-    authorize @comment
     @comment.destroy
     respond_to do |format|
       format.html { redirect_back fallback_location: root_url, notice: "Comment was successfully destroyed." }
       format.json { head :no_content }
     end
+    
   end
 
   private

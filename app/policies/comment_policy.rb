@@ -13,7 +13,9 @@ class CommentPolicy
   end
 
   def create?
-    true
+    user == comment.author ||
+      !comment.author.private? ||
+      comment.author.followers.include?(user)
   end
 
   # additional authorization steps to ensure only author of comment is able to edit/update or delete their comment

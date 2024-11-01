@@ -7,6 +7,10 @@ class PhotoPolicy < ApplicationPolicy
     @photo = photo
   end
 
+  def index?
+    true
+  end
+
   def show?
     user == photo.owner ||
       !photo.owner.private? ||
@@ -16,6 +20,14 @@ class PhotoPolicy < ApplicationPolicy
   def edit?
     user == photo.owner
   end
+
+  def new?
+    true
+  end 
+
+  def create?
+    true
+  end 
 
   def update?
     user == photo.owner
