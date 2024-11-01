@@ -7,9 +7,7 @@ class UserPolicy
   end
 
   def show?
-    user == current_user ||
-     !user.private? || 
-     user.followers.include?(current_user)
+    true
   end
 
   def feed?

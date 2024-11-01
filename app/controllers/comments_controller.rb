@@ -23,6 +23,7 @@ class CommentsController < ApplicationController
 
   # POST /comments or /comments.json
   def create
+    authorize @comment
     @comment = Comment.new(comment_params)
     @comment.author = current_user
 
