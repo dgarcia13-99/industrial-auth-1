@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
    before_action :set_user, only: %i[ show liked feed followers following discover ]
    before_action {authorize(@user || User)}
-   after_action {authorize(@user || User)}, only: %i[show liked feed discover]
+   after_action :verify_authorization, only: %i[show liked feed discover]
 
    def show
    end
@@ -23,5 +23,9 @@ class UsersController < ApplicationController
       else
         @user = current_user
       end
+    end
+
+    def verify_authorization
+      authorize(@user || User)
     end
 end
