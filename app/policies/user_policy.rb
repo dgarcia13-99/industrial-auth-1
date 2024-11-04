@@ -10,6 +10,12 @@ class UserPolicy
     true
   end
 
+  def user_photos?
+    user == current_user ||
+    !user.private? ||
+    user.followers.include?(current_user)
+  end
+
   def feed?
     user == current_user
   end

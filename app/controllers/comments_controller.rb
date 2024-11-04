@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[ show edit update destroy ]
   before_action {authorize(@comment || Comment)}
-  after_action {authorize(@comment || Comment)}, only: %i[show edit update destroy]
+  after_action {authorize(@comment || Comment)}
  
   # GET /comments or /comments.json
   def index
