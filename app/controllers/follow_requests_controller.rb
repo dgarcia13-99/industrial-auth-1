@@ -1,6 +1,7 @@
 class FollowRequestsController < ApplicationController
   before_action :set_follow_request, only: %i[ show edit update destroy ]
-  before_action :ensure_current_user_is_owner, only: [:destroy, :edit]
+  before_action {authorize(@follow_request || FollowRequest)}
+  after_action {authorize(@follow_request || FollowRequest)}
 
   # GET /follow_requests or /follow_requests.json
   def index
@@ -11,13 +12,12 @@ class FollowRequestsController < ApplicationController
   def show
   end
 
+  def edit
+  end
+
   # GET /follow_requests/new
   def new
     @follow_request = FollowRequest.new
-  end
-
-  # GET /follow_requests/1/edit
-  def edit
   end
 
   # POST /follow_requests or /follow_requests.json
@@ -68,11 +68,4 @@ class FollowRequestsController < ApplicationController
     def follow_request_params
       params.require(:follow_request).permit(:recipient_id, :sender_id, :status)
     end
-
-    def ensure_current_user_is_owner
-      if current_user != @follow_request.sender 
-        redirect_back fallback_location: root_url, alert: "You're not authorized for that."
-      end
-    end
-
 end

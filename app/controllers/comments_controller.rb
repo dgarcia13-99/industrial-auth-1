@@ -1,7 +1,8 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[ show edit update destroy ]
-  before_action :is_an_authorized_user, only: [:destroy, :create]
-
+  before_action {authorize(@comment || Comment)}
+  after_action {authorize(@comment || Comment)}
+ 
   # GET /comments or /comments.json
   def index
     @comments = Comment.all
@@ -34,6 +35,7 @@ class CommentsController < ApplicationController
         format.json { render json: @comment.errors, status: :unprocessable_entity }
       end
     end
+    
   end
 
   # PATCH/PUT /comments/1 or /comments/1.json
@@ -47,6 +49,7 @@ class CommentsController < ApplicationController
         format.json { render json: @comment.errors, status: :unprocessable_entity }
       end
     end
+    
   end
 
   # DELETE /comments/1 or /comments/1.json
@@ -56,19 +59,13 @@ class CommentsController < ApplicationController
       format.html { redirect_back fallback_location: root_url, notice: "Comment was successfully destroyed." }
       format.json { head :no_content }
     end
+    
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_comment
       @comment = Comment.find(params[:id])
-    end
-
-    def is_an_authorized_user
-      @photo = Photo.find(params.fetch(:comment).fetch(:photo_id))
-      if current_user != @photo.owner && @photo.owner.private? && !current_user.leaders.include?(@photo.owner)
-        redirect_back fallback_location: root_url, alert: "Not authorized"
-      end
     end
 
     # Only allow a list of trusted parameters through.

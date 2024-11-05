@@ -1,6 +1,19 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show liked feed followers following discover ]
-  before_action :ensure_current_user_is_owner, only: [:feed, :discover]
+   before_action :set_user, only: %i[ show liked feed followers following discover ]
+   before_action {authorize(@user || User)}
+   after_action {authorize(@user || User)}
+
+   def show
+   end
+
+   def liked
+   end
+
+   def feed
+   end
+
+   def discover
+   end
 
   private
 
@@ -11,11 +24,4 @@ class UsersController < ApplicationController
         @user = current_user
       end
     end
-
-    def ensure_current_user_is_owner
-      if current_user != @user
-        redirect_back fallback_location: root_url, alert: "You're not authorized for that."
-      end
-    end
-
 end
